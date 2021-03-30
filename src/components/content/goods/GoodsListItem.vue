@@ -1,6 +1,7 @@
 <template>
   <div class="goods-item">
-    <img :src="GoodsItem.show.img" alt="">
+    <!--  @load="imgLoad"用来监听图片加载完成  -->
+    <img :src="GoodsItem.show.img" alt="" @load="imgLoad">
     <div class="goods-info">
       <p>{{GoodsItem.title}}</p>
       <span class="price">{{GoodsItem.price}}</span>
@@ -18,6 +19,12 @@ export default {
       default(){
         return {}
       }
+    }
+  },
+  methods:{
+    //当图片加载完成的事件被触发时，通过事件总线向Home.vue发送一个图片加载完成的事件
+    imgLoad(){
+      this.$bus.$emit("itemImgLoad")
     }
   }
 }

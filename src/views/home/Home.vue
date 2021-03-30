@@ -68,6 +68,10 @@ export default {
     this.getHomeData('pop')
     this.getHomeData('new')
     this.getHomeData('sell')
+    //监听GoodsListItem发送过来的图片加载完成的事件，然后每一张图片加载完成都去回调scroll的refresh方法，但是需要注意的是$bus是空，不存在，我们需要在main.js中通过向Vue的原型中添加一个$bus事件，初始化值为一个vue实例对象即可
+    this.$bus.$on('itemImgLoad',()=>{
+      this.$refs.scroll.refresh()
+    })
   },
   computed:{
     showGoods(){
@@ -100,7 +104,7 @@ export default {
     },
     loadMore(){
       this.getHomeData(this.currentType)
-      this.$refs.scroll.refresh()
+
     },
 
     /**
