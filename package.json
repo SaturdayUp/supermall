@@ -8,13 +8,14 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "better-scroll": "^2.2.1",
     "core-js": "^2.6.5",
     "vue": "^2.6.10",
     "vue-router": "^3.5.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.4",
-    "@vue/cli-service": "^3.0.4",
+    "@vue/cli-service": "^4.5.12",
     "vue-template-compiler": "^2.6.10"
   },
   "postcss": {
