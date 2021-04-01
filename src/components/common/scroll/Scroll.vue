@@ -33,21 +33,33 @@ export default {
       click:true
     })
   //  2.监听滚动的位置
-    this.scroll.on('scroll',(position)=>{
-      this.$emit('scroll',position)
-    })
+    if (this.probeType===2||this.probeType===3){
+      this.scroll.on('scroll',(position)=>{
+        this.$emit('scroll',position)
+      })
+    }
+
   //  3.上拉加载更多
-    this.scroll.on('pullingUp',()=>{
-      this.$emit('pullingUp')
-    })
+    if (this.pullUpLoad){
+      this.scroll.on('pullingUp',()=>{
+        this.$emit('pullingUp')
+      })
+    }
   },
 
   methods:{
     scrollTo(x,y,time=400){
-      this.scroll.scrollTo(x,y,time)
+      this.scroll&&this.scroll.scrollTo(x,y,time)
     },
     refresh(){
-      this.scroll.refresh()
+      // console.log('------');
+      this.scroll&&this.scroll.refresh()
+    },
+    finishPullUp(){
+      this.scroll&&this.scroll.finishPullUp()
+    },
+    getScrollY(){
+      return this.scroll?this.scroll.y:0
     }
   }
 }
