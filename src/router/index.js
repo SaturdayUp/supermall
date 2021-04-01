@@ -4,6 +4,7 @@ import Home from "@/views/home/Home";
 import Category from "@/views/category/Category";
 import Cart from "@/views/cart/Cart";
 import Profile from "@/views/profile/Profile";
+import Detail from "@/views/detail/Detail";
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,11 @@ const routes=[
   {
     path: '/profile',
     component: Profile
+  },
+  {
+    //动态路由跳转
+    path:'/detail/:iid',
+    component: Detail
   }
 ]
 const router=new VueRouter({
