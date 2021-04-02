@@ -8,7 +8,7 @@
       <div class="shop-middle-item shop-middle-left">
         <div class="info-sells">
           <div class="sells-count">
-            {{shop.sells}}
+            {{shop.sells|sellCountFilter}}
           </div>
           <div class="sells-text">总销量</div>
         </div>
@@ -44,6 +44,15 @@ export default {
       default(){
         return {}
       }
+    }
+  },
+  filters:{
+  sellCountFilter(value){
+    let result=value
+    if(value>10000){
+      result = (value/10000).toFixed(1)+'万'
+      }
+    return result
     }
   }
 }

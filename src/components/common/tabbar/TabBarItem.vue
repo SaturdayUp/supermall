@@ -31,7 +31,8 @@ export default {
   },
   methods:{
     itemClick(){
-      this.$router.replace(this.path)
+      //为了使双击不报错，所以在路由切换时抛出一个err
+      this.$router.replace(this.path).catch(err=>err)
     }
   }
 }
