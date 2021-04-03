@@ -28,6 +28,7 @@ export default {
   methods:{
     clickTitle(index){
       this.currentIndex=index
+      this.$emit('clickTitle',index)
     },
     backHome(){
       this.$router.back()

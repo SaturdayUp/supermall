@@ -1,6 +1,6 @@
 <template>
   <div id="home">
-    <nav-bar class="home-nav"><div slot="center">购物车</div></nav-bar>
+    <nav-bar class="home-nav"><div slot="center">首页</div></nav-bar>
     <tab-control
       v-show="isTabFixed"
       :titles="['流行','新款','精选']"
@@ -40,7 +40,7 @@ import Scroll from "@/components/common/scroll/Scroll";
 import BackTop from "@/components/content/backTop/BackTop";
 
 import {getHomeMultidata,getHomeData} from "@/network/home";
-import {debounce} from "@/common/Utils";
+import {itemListenerMixin} from "@/common/mixin";
 
 export default {
   name: "Home",
@@ -55,6 +55,7 @@ export default {
     BackTop
 
   },
+  mixins:[itemListenerMixin],
   data(){
     return{
       banners:[],
@@ -68,7 +69,8 @@ export default {
       isShowBackTop:false,
       tabOffsetTop:0,
       isTabFixed:false,
-      saveY:0
+      saveY:0,
+      itemImgListener:null
     }
   },
   created() {
@@ -79,26 +81,31 @@ export default {
     this.getHomeData('sell')
 
   },
+  //mounted中的代码以混入
   mounted() {
     //监听GoodsListItem发送过来的图片加载完成的事件，然后每一张图片加载完成都去回调scroll的refresh方法，
     // 但是需要注意的是$bus是空，不存在，我们需要在main.js中通过向Vue的原型中添加一个$bus事件，
     // 初始化值为一个vue实例对象即可
     //反复请求refresh会造成浪费，可以通过防抖函数来减少请求得次数
-    const refresh=debounce(this.$refs.scroll.refresh,300)
-    this.$bus.$on('itemImgLoad',()=>{
+    // const refresh=debounce(this.$refs.scroll.refresh,300)
+    // this.itemImgListener=()=>{
       //起初是在creat中调用该回调函数，但是在create中页面还没有挂载，可能拿不到$refs，所以此处在mounted中执行
-      refresh()
-    })
+    //   refresh()
+    // }
+    // this.$bus.$on('itemImgLoad',this.itemImgListener)
   },
   activated() {
   //  当home再次处于活跃状态时，将其offset设置为之前的offset
     this.$refs.scroll.scrollTo(0,this.saveY,0)
     //每次返回到之前的位置时，最好做一次刷新，否则可能会出现不能点击的情况
     this.$refs.scroll.refresh()
+  //
   },
   deactivated() {
-  //  当切换到其他模块时，再次点击home为了保存之前的home状态使用deactived
+  //  1.当切换到其他模块时，再次点击home为了保存之前的home状态使用deactived
     this.saveY=this.$refs.scroll.getScrollY()
+  //  2.当该组件处于不活跃状态时，需要将之前的事件取消掉，不再进行refresh
+    this.$bus.$off('itemImgLoad',this.itemImgListener)
 
   },
   computed:{

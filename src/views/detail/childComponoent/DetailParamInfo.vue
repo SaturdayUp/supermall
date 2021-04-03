@@ -56,7 +56,7 @@ export default {
 .info-param-value{
   color: #eb4868;
 }
-.info-param img{
+.info-param-image img{
   width: 100%;
 }
 </style>

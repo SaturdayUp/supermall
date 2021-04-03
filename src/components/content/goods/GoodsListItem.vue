@@ -1,7 +1,7 @@
 <template>
   <div class="goods-item">
     <!--  @load="imgLoad"用来监听图片加载完成  -->
-    <img :src="GoodsItem.show.img" alt="" @load="imgLoad" @click="itemClick">
+    <img :src="showImage" alt="" @load="imgLoad" @click="itemClick">
     <div class="goods-info">
       <p>{{GoodsItem.title}}</p>
       <span class="price">{{GoodsItem.price}}</span>
@@ -19,6 +19,11 @@ export default {
       default(){
         return {}
       }
+    }
+  },
+  computed:{
+    showImage(){
+      return this.GoodsItem.image||this.GoodsItem.show.img
     }
   },
   methods:{
