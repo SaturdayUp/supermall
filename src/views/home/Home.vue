@@ -40,7 +40,7 @@ import Scroll from "@/components/common/scroll/Scroll";
 import BackTop from "@/components/content/backTop/BackTop";
 
 import {getHomeMultidata,getHomeData} from "@/network/home";
-import {itemListenerMixin} from "@/common/mixin";
+import {itemListenerMixin,backTopMixin} from "@/common/mixin";
 
 export default {
   name: "Home",
@@ -55,7 +55,7 @@ export default {
     BackTop
 
   },
-  mixins:[itemListenerMixin],
+  mixins:[itemListenerMixin,backTopMixin],
   data(){
     return{
       banners:[],
@@ -66,7 +66,7 @@ export default {
         'sell':{page:0,list:[]}
       },
       currentType:'pop',
-      isShowBackTop:false,
+      // isShowBackTop:false,
       tabOffsetTop:0,
       isTabFixed:false,
       saveY:0,
@@ -134,10 +134,12 @@ export default {
       this.$refs.tabControl1.currentIndex=index
       this.$refs.tabControl2.currentIndex=index
     },
-    backTop(){
-      this.$refs.scroll.scrollTo(0,0)
-    },
+    //点击回到顶部，让其滑动回到顶部
+    // backTop(){
+    //   this.$refs.scroll.scrollTo(0,0)
+    // },
     scrollContent(position){
+
       // console.log(position);
       //1.通过滑动的距离控制backTop显示或者隐藏
       this.isShowBackTop=(-position.y)>1000?true:false

@@ -43,12 +43,12 @@ export default {
   }
   .title-item{
     flex: 1;
-    font-size: 13px;
   }
   .active{
     color: var(--color-high-text);
   }
   .back{
+    font-size: 13px;
     margin-top: 7px;
   }
 </style>

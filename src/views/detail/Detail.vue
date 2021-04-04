@@ -1,7 +1,11 @@
 <template>
   <div id="detail">
-    <detail-navbar class="detail-nav" @clickTitle="clickTitle"></detail-navbar>
-    <scroll class="content" ref="scroll">
+    <detail-navbar class="detail-nav" @clickTitle="clickTitle" ref="detailNav"></detail-navbar>
+
+    <scroll class="content" ref="scroll" @scroll="contentScroll" :probe-type="3">
+      <ul>
+        <li v-for="item in $store.state.cartList">{{item}}</li>
+      </ul>
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info  :shop="shop"></detail-shop-info>
@@ -10,7 +14,8 @@
       <detail-comment-info ref="comment" :comment-info="commentInfo"></detail-comment-info>
       <goods-list :goods="recomments" ref="recommends"></goods-list>
     </scroll>
-
+    <detail-bottom-bar class="detail-bottom-bar" @addToCart="addToCart"></detail-bottom-bar>
+    <back-top @click.native="backTop" v-if="isShowBackTop"></back-top>
   </div>
 </template>
 
@@ -25,7 +30,9 @@ import DetailCommentInfo from "@/views/detail/childComponoent/DetailCommentInfo"
 import {getDetails,Goods,Shop,GoodsParam,getRecommend} from "@/network/detail";
 import Scroll from "@/components/common/scroll/Scroll";
 import GoodsList from "@/components/content/goods/GoodsList";
-import {itemListenerMixin} from "@/common/mixin";
+import DetailBottomBar from "@/views/detail/childComponoent/DetailBottomBar";
+// import BackTop from "@/components/content/backTop/BackTop";
+import {itemListenerMixin,backTopMixin} from "@/common/mixin";
 import {debounce} from "@/common/Utils";
 
 export default {
@@ -39,10 +46,11 @@ export default {
     DetailGoodsInfo,
     DetailParamInfo,
     DetailCommentInfo,
-
+    DetailBottomBar,
+    // BackTop,
     GoodsList
   },
-  mixins:[itemListenerMixin],
+  mixins:[itemListenerMixin,backTopMixin],
   data(){
     return{
       iid:null,
@@ -55,7 +63,9 @@ export default {
       recomments:[],
       itemImgListener:null,
       themeTopYs:[],
-      getThemeTopY:null
+      getThemeTopY:null,
+      currentIndex:0,
+      // isShowBackTop:false
     }
   },
   created() {
@@ -107,11 +117,11 @@ export default {
         this.themeTopYs.push(this.$refs.params.$el.offsetTop)
         this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
         this.themeTopYs.push(this.$refs.recommends.$el.offsetTop)
+        this.themeTopYs.push(Number.MAX_VALUE)
         console.log(this.themeTopYs);
     },100)
-
   },
-  //mounted中的代码以混入
+  //mounted中的代码已混入
   mounted() {
 
   },
@@ -143,11 +153,60 @@ export default {
       this.getThemeTopY()
     },
     clickTitle(index){
-      this.$refs.scroll.scrollTo(0,-this.themeTopYs[index],1000)
+      this.$refs.scroll.scrollTo(0,-this.themeTopYs[index],100)
+    },
+    contentScroll(position){
+      //通过判断当前position的y值来决定isShowBackTop是否显示
+      this.isShowBackTop=-position.y>1000?true:false
+      const positionY=-position.y
+      //获取到themeTopYs[0,7398,9120,9452]
+      let length=this.themeTopYs.length
+      // for (let index=0;index < length;index++){
+        //普通方法
+        //1.为了不重复打印index，这里先进行一次判断，判断当前的currentIndex是否等于index，如果不等于再进入if
+        //2.这里需要分两种情况考虑，因为使用了index+1，最后可能会造成数组下标越界
+        //    2.1 当0 <= positionY < 7398 时，此时的index=0
+        //    2.2 当7398 <= positionY < 9120 时，此时的index=1
+        //    2.3 当9120 <= positionY < 9452 时，此时的index=2
+        //    2.4 当9452 <= positionY ，此时的index=3
+        // if (this.currentIndex!==index && ((index<length-1 && positionY>=this.themeTopYs[index]&&positionY<this.themeTopYs[index+1])||(index===length-1) && positionY>=this.themeTopYs[index])){
+          //3.此时让currentIndex=index
+          // this.currentIndex=index
+          // console.log(index);
+          //然后将currentIndex传给detail-navbar中的currentIndex
+        //   this.$refs.detailNav.currentIndex=this.currentIndex
+        // }
+      //  hack方法
+      for (let index=0;index<length-1;index++){
+        //主要思想就是向数组中末尾添加一个最大值，这样两种情况就能够合并，遍历的时候index=3时，index+1也不会造成数组下标越界
+        if ((this.currentIndex!==index)&&((positionY>=this.themeTopYs[index])&&(positionY<this.themeTopYs[index+1]))){
+          this.currentIndex=index
+          console.log(index);
+          this.$refs.detailNav.currentIndex=this.currentIndex
+        }
+      }
+    },
+    //添加到购物车
+    addToCart(){
+    //  获取到购物车需要显示的商品的数据,这里需要利用vuex对一些数据状态进行管理，不要直接将所有的数据直接发送到购物车组件中
+      const product={}
+      product.image=this.topImages[0]
+      product.title=this.goods.title
+      product.desc=this.goods.desc
+      product.price=this.goods.realPrice
+      product.iid=this.iid
+
+    //  将商品添加到vuex对象中
+    //  注意,如果是直接commit到mutations中使用commitjike
+    //   this.$store.commit('addToCart',product)
+    //  如果是传入到action中,需要用到dispatch
+      this.$store.dispatch('addToCart',product)
     }
+    // backTop() {
+    //   this.$refs.scroll.scrollTo(0,0,100)
+    // }
   }
 }
-
 </script>
 
 <style scoped>
@@ -172,6 +231,6 @@ export default {
   left: 0;
   right: 0;
   top: 44px;
-  bottom: 0;
+  bottom: 49px;
 }
 </style>
