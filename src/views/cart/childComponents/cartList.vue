@@ -26,6 +26,7 @@ export default {
   },
   activated() {
     this.$refs.scroll.refresh()
+    console.log(this.cartList);
   }
 }
 </script>
@@ -33,7 +34,7 @@ export default {
 <style scoped>
 .cart-list{
   /*注意使用calc属性时，在运算符前后都需要一个kongge*/
-  height: calc(100% - 44px - 49px);
+  height: calc(100% - 44px - 49px - 40px);
 }
 .content{
   height: 100%;

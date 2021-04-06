@@ -31,6 +31,7 @@ import DetailBottomBar from "@/views/detail/childComponoent/DetailBottomBar";
 // import BackTop from "@/components/content/backTop/BackTop";
 import {itemListenerMixin,backTopMixin} from "@/common/mixin";
 import {debounce} from "@/common/Utils";
+import {mapActions} from 'vuex'
 
 export default {
   name: "Detail",
@@ -135,6 +136,7 @@ export default {
     this.$bus.$off('itemImgLoad',this.itemImgListener)
   },
   methods:{
+    ...mapActions(['addCart']),
     imgLoad(){
       //如果这样执行的话，没有用到防抖
       // this.$refs.scroll.refresh()
@@ -197,7 +199,14 @@ export default {
     //  注意,如果是直接commit到mutations中使用commitjike
     //   this.$store.commit('addToCart',product)
     //  如果是传入到action中,需要用到dispatch
-      this.$store.dispatch('addToCart',product)
+    //   this.$store.dispatch('addToCart',product).then(res=>{
+    //     console.log(res);
+    //   })
+    //  这里也可以使用mapActions的映射
+      this.addCart(product).then(res=>{
+        // console.log(res);
+        this.$toast.show(res,2000)
+      })
     }
     // backTop() {
     //   this.$refs.scroll.scrollTo(0,0,100)

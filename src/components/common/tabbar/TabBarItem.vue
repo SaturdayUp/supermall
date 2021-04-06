@@ -13,7 +13,7 @@ export default {
     path:String,
     activeColor:{
       type:String,
-      default:'red'
+      default:'#FF852A'
     }
   },
   data(){
@@ -43,8 +43,7 @@ export default {
   flex: 1;
   text-align: center;
   font-size: 14px;
-
-
+  font-weight: bold;
 }
 .tab-bar-item img{
   width: 24px;
