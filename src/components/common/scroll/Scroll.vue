@@ -8,6 +8,8 @@
 
 <script>
 import BScroll from 'better-scroll'
+// import ObserveDOM from '@better-scroll/observe-dom'
+// BScroll.use(ObserveDOM)
 export default {
   name: "Scroll",
   props:{
@@ -28,6 +30,8 @@ export default {
   mounted() {
     //1.创建better-scroll对象
     this.scroll=new BScroll(this.$refs.wrapper,{
+      // mouseWheel:true,
+      // observeDOM:true,
       probeType:this.probeType,
       pullUpLoad: this.pullUpLoad,
       click:true

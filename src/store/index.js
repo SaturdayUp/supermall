@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import actions from "@/store/actions";
 import mutations from "@/store/mutations";
+import getters from "@/store/getters"
 
 
 //1.安装插件
@@ -16,6 +17,7 @@ const store=new Vuex.Store({
   //mutations的设计原则就是其中的每个方法尽量完成的事件比较单一,所以涉及到判断和异步操作我们一般放到action中
   mutations,
   actions,
+  getters
 })
 //3.将store导出
 export default store
